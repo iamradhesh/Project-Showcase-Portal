@@ -2,10 +2,12 @@
 import Image from "next/image";
 import { HiOutlinePencilSquare, HiOutlineUser, HiOutlineBars3 } from "react-icons/hi2";
 import { useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+  const {data: session} = useSession();
+  console.log("Session Data:", session);
   const USER_IMAGE =
     "https://res.cloudinary.com/dknvsbuyy/image/upload/v1686314044/1617826370281_30f9a2a96a.jpg";
 
@@ -35,14 +37,16 @@ const Header = () => {
                 Create Post
               </button>
               
-              <button className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2">
+              <button 
+              onClick={() => signIn()}
+              className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2">
                 <HiOutlineUser className="w-4 h-4" />
                 Sign In
               </button>
               
               <div className="relative">
                 <Image
-                  src={USER_IMAGE}
+                  src={session?.user?.image || USER_IMAGE}
                   alt="User avatar"
                   width={40}
                   height={40}
@@ -73,14 +77,17 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white">
             <div className="px-4 py-3 space-y-3">
-              <button className="w-full flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2">
+              <button
+                onClick={() => signIn()}
+                className="w-full flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
+              >
                 <HiOutlineUser className="w-4 h-4" />
                 Sign In
               </button>
               
               <div className="flex items-center justify-center pt-2">
                 <Image
-                  src={USER_IMAGE}
+                  src={session?.user?.image || USER_IMAGE}
                   alt="User avatar"
                   width={40}
                   height={40}
