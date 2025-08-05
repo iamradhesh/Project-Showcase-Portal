@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { HiOutlinePencilSquare, HiOutlineUser, HiOutlineBars3 } from "react-icons/hi2";
 import { useState } from "react";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, useSession ,signOut } from "next-auth/react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,12 +37,25 @@ const Header = () => {
                 Create Post
               </button>
               
-              <button 
-              onClick={() => signIn()}
-              className="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2">
-                <HiOutlineUser className="w-4 h-4" />
-                Sign In
-              </button>
+              {
+                !session ? (
+                  <button 
+                    onClick={() => signIn()}
+                    className="rounded inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
+                  >
+                    <HiOutlineUser className="w-4 h-4" />
+                    Sign In
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => signOut()}
+                    className="rounded inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
+                  >
+                    <HiOutlinePencilSquare className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                )
+              }
               
               <div className="relative">
                 <Image
@@ -77,13 +90,25 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white">
             <div className="px-4 py-3 space-y-3">
-              <button
-                onClick={() => signIn()}
-                className="w-full flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
-              >
-                <HiOutlineUser className="w-4 h-4" />
-                Sign In
-              </button>
+              {
+                !session ? (
+                  <button 
+                    onClick={() => signIn()}
+                    className="w-full flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
+                  >
+                    <HiOutlineUser className="w-4 h-4" />
+                    Sign In
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => signOut()}
+                    className=" w-full flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
+                  >
+                    <HiOutlinePencilSquare className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                )
+              }
               
               <div className="flex items-center justify-center pt-2">
                 <Image
