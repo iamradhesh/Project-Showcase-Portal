@@ -1,15 +1,20 @@
 "use client";
 import Image from "next/image";
-import { HiOutlinePencilSquare, HiOutlineUser, HiOutlineBars3 } from "react-icons/hi2";
+import {
+  HiOutlinePencilSquare,
+  HiOutlineUser,
+  HiOutlineBars3,
+} from "react-icons/hi2";
 import { useState } from "react";
-import { signIn, useSession ,signOut } from "next-auth/react";
-
+import { signIn, useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const {data: session} = useSession();
+  const { data: session } = useSession();
+  const router = useRouter();
   console.log("Session Data:", session);
-  const USER_IMAGE =
-    "https://res.cloudinary.com/dknvsbuyy/image/upload/v1686314044/1617826370281_30f9a2a96a.jpg";
+  // const USER_IMAGE =
+  //   "https://res.cloudinary.com/dknvsbuyy/image/upload/v1686314044/1617826370281_30f9a2a96a.jpg";
 
   return (
     <>
@@ -17,7 +22,6 @@ const Header = () => {
       <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            
             {/* Logo Section */}
             <div className="flex-shrink-0 ">
               <Image
@@ -32,50 +36,55 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4">
-              <button className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 gap-2">
+              <button onClick={() => router.push('/create-project')}
+              className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 gap-2">
                 <HiOutlinePencilSquare className="w-4 h-4" />
                 Create Post
               </button>
-              
-              {
-                !session ? (
-                  <button 
-                    onClick={() => signIn()}
-                    className="rounded inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
-                  >
-                    <HiOutlineUser className="w-4 h-4" />
-                    Sign In
-                  </button>
-                ) : (
-                  <button 
-                    onClick={() => signOut()}
-                    className="rounded inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
-                  >
-                    <HiOutlinePencilSquare className="w-4 h-4" />
-                    Sign Out
-                  </button>
-                )
-              }
-              
+
+              {!session ? (
+                <button
+                  onClick={() => signIn()}
+                  className="rounded inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
+                >
+                  <HiOutlineUser className="w-4 h-4" />
+                  Sign In
+                </button>
+              ) : (
+                <button
+                  onClick={() => signOut()}
+                  className="rounded inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
+                >
+                  <HiOutlinePencilSquare className="w-4 h-4" />
+                  Sign Out
+                </button>
+              )}
+
               <div className="relative">
-                <Image
-                  src={session?.user?.image || USER_IMAGE}
-                  alt="User avatar"
-                  width={40}
-                  height={40}
-                  className="w-10 h-10 rounded-full border-2 border-gray-200 hover:border-blue-400 transition-colors cursor-pointer"
-                />
+                {/* Only show avatar if user is signed in */}
+                {session && (
+                  <div className="relative">
+                    <Image
+                      src={session.user.image || DEFAULT_AVATAR}
+                      alt="User avatar"
+                      width={40}
+                      height={40}
+                      onClick={() => router.push('/profile')}
+                      className="w-10 h-10 rounded-full border-2 border-gray-200 hover:border-blue-400 transition-colors cursor-pointer"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Mobile Actions */}
             <div className="flex md:hidden items-center space-x-2">
-              <button className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200">
+              <button onClick={() => router.push('/create-project')} className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200">
                 <HiOutlinePencilSquare className="w-5 h-5" />
-                <span className="sr-only">Create Post</span>
+                <span className="sr-only">Create Project</span>
               </button>
-              
-              <button 
+
+              <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-200"
               >
@@ -90,34 +99,38 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 bg-white">
             <div className="px-4 py-3 space-y-3">
-              {
-                !session ? (
-                  <button 
-                    onClick={() => signIn()}
-                    className="w-full flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
-                  >
-                    <HiOutlineUser className="w-4 h-4" />
-                    Sign In
-                  </button>
-                ) : (
-                  <button 
-                    onClick={() => signOut()}
-                    className=" w-full flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
-                  >
-                    <HiOutlinePencilSquare className="w-4 h-4" />
-                    Sign Out
-                  </button>
-                )
-              }
-              
+              {!session ? (
+                <button
+                  onClick={() => signIn()}
+                  className="w-full flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
+                >
+                  <HiOutlineUser className="w-4 h-4" />
+                  Sign In
+                </button>
+              ) : (
+                <button
+                  onClick={() => signOut()}
+                  className=" w-full flex items-center justify-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 gap-2"
+                >
+                  <HiOutlinePencilSquare className="w-4 h-4" />
+                  Sign Out
+                </button>
+              )}
+
               <div className="flex items-center justify-center pt-2">
-                <Image
-                  src={session?.user?.image || USER_IMAGE}
-                  alt="User avatar"
-                  width={40}
-                  height={40}
-                  className="w-10 h-10 rounded-full border-2 border-gray-200"
-                />
+                {/* Only show avatar if user is signed in */}
+                {session && (
+                  <div className="relative">
+                    <Image
+                      src={session?.user?.image || DEFAULT_AVATAR}
+                      alt="User avatar"
+                      width={40}
+                      height={40}
+                      onClick={() => router.push('/profile')}
+                      className="w-10 h-10 rounded-full border-2 border-gray-200 hover:border-blue-400 transition-colors cursor-pointer"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
