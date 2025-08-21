@@ -10,6 +10,7 @@ import { useState } from "react"; // React hook for managing component state
 import { collection, addDoc } from "firebase/firestore"; // Firebase functions for database
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Firebase functions for file storage
 import { db, storage } from "../../../Shared/firebaseConfig"; // Our Firebase configuration
+import { useSession } from "next-auth/react";
 
 export default function Form() {
   // STATE: This holds all our form data
@@ -22,7 +23,7 @@ export default function Form() {
     file: null,          // The file the user wants to upload
     fileUrl: "",         // Where the uploaded file will be stored online
   });
-
+  const { data: session } = useSession();
   // STATE: This tracks whether we're currently submitting the form
   // We use this to disable buttons and show loading states
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -105,7 +106,9 @@ export default function Form() {
         projectLink: formData.projectLink.trim(),    // Remove extra spaces
         fileUrl: fileUrl,                           // URL of uploaded file (empty if no file)
         createdAt: new Date(),                      // When this project was created
-        updatedAt: new Date()                       // When this project was last updated
+        updatedAt: new Date(),                       // When this project was last updated
+        userId: session?.user?.id ?? null,         // ID of the user who created the project
+        userName: session?.user?.name ?? null
       };
 
       // DEBUG: Log what we're about to save (helpful for troubleshooting)
